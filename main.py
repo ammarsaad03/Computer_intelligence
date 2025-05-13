@@ -12,7 +12,7 @@ from algorithms.aco import ACO
 from algorithms.pso import PSO
 from algorithms.harmony_search import HarmonySearch
 from algorithms.genetic_algorithm import GeneticAlgorithm
-
+from algorithms.artificial_bee_colony import ArtificialBeeColony
 # Import utility functions
 from utils.training import train_algorithm
 
@@ -50,7 +50,7 @@ st.sidebar.header("Algorithm Selection")
 selected_algorithms = st.sidebar.multiselect(
     "Select algorithms to run",
     ["Standard SOM", "Ant Colony Optimization", "Particle Swarm Optimization", 
-     "Harmony Search", "Genetic Algorithm"],
+     "Harmony Search", "Genetic Algorithm", "Artificial Bee Colony"],
     default=["Standard SOM"]
 )
 
@@ -100,6 +100,16 @@ if "Genetic Algorithm" in selected_algorithms:
             "mutation_rate": st.slider("Mutation rate", 0.01, 0.5, 0.1),
             "elite_size": st.slider("Elite size", 1, 5, 2)
         }
+
+if "Artificial Bee Colony" in selected_algorithms:
+    with st.sidebar.expander("ABC Parameters"):
+        algorithm_params["ABC"] = {
+            "n_bees": st.slider("Number of bees", 5, 50, 20),
+            "limit": st.slider("Abandonment limit", 5, 50, 20),
+            "max_cycles": st.slider("Maximum cycles", 10, 200, 100),
+            "output_dim": st.slider("Output dimensions", 2, min(X.shape[1], 5), 2)
+        }
+
 # Initialize results storage
 if 'results' not in st.session_state:
     st.session_state.results = {}
@@ -169,6 +179,14 @@ if st.sidebar.button("Run Selected Algorithms"):
                 crossover_rate=params.get("crossover_rate", 0.8),
                 mutation_rate=params.get("mutation_rate", 0.1),
                 elite_size=params.get("elite_size", 2)
+            )
+        elif name == "Artificial Bee Colony":
+            params = algorithm_params.get("ABC", {})
+            algo = ArtificialBeeColony(
+                output_dim=params.get("output_dim", 2),
+                n_bees=params.get("n_bees", 20),
+                limit=params.get("limit", 20),
+                max_cycles=params.get("max_cycles", 100)
             )
         
         # Train the algorithm using the wrapper function
