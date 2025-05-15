@@ -2,8 +2,12 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import PCA
+from utils.metrics import calculate_silhouette
 
-def train_algorithm(name, algorithm, data, labels, epochs, feature_names, class_names, progress_callback=None):
+def train_algorithm(name, algorithm, data, labels, epochs, feature_names, class_names,random_seed=None, progress_callback=None):
+    # Set seeds at the beginning of each training run
+    if random_seed is not None:
+        np.random.seed(random_seed)
     """
     Standardized wrapper for training nature-inspired algorithms
     
@@ -40,7 +44,8 @@ def train_algorithm(name, algorithm, data, labels, epochs, feature_names, class_
     
     # Calculate elapsed time
     elapsed_time = time.time() - start_time
-    
+
+    silhouette_value = calculate_silhouette(algorithm.projected_data, labels)
     # Create visualization
     fig = plt.figure(figsize=(10, 8))
     
@@ -53,7 +58,7 @@ def train_algorithm(name, algorithm, data, labels, epochs, feature_names, class_
     if name == "Standard SOM":
         create_som_visualization(algorithm, data, labels, fig, name, q_error, elapsed_time, class_names)
     elif name == "Ant Colony Optimization":
-        create_aco_visualization(algorithm, data, labels, fig, name, q_error, elapsed_time, feature_names, class_names)
+        create_aco_visualization(algorithm, data, labels, fig, name, q_error, elapsed_time, feature_names, class_names,silhouette_value)
     elif name == "Harmony Search":
         create_harmony_visualization(algorithm, data, labels, fig, name, q_error, elapsed_time, class_names)
     else:
@@ -63,6 +68,7 @@ def train_algorithm(name, algorithm, data, labels, epochs, feature_names, class_
     return {
         'algorithm': algorithm,
         'quantization_error': q_error,
+        'silhouette_score': silhouette_value,
         'time': elapsed_time,
         'plot': fig,
         'name': name
