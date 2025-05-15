@@ -3,7 +3,9 @@ from sklearn.metrics.pairwise import pairwise_distances
 
 class HarmonySearch:
     """Harmony Search Algorithm for dimensionality reduction"""
-    def __init__(self, output_dim=2, hm_size=10, hmcr=0.9, par=0.3, bw=0.05):
+    def __init__(self, output_dim=2, hm_size=10, hmcr=0.9, par=0.3, bw=0.05,random_seed=None):
+        if random_seed is not None:
+            np.random.seed(random_seed)
         self.output_dim = output_dim
         self.hm_size = hm_size  # Harmony memory size
         self.hmcr = hmcr  # Harmony memory considering rate

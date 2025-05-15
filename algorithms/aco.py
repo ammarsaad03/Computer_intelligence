@@ -5,7 +5,9 @@ from sklearn.model_selection import cross_val_score
 
 class ACO:
     """Ant Colony Optimization for feature selection and dimensionality reduction"""
-    def __init__(self, n_ants=10, alpha=1, beta=2, evaporation_rate=0.5, q=100, n_features_to_select=2):
+    def __init__(self, n_ants=10, alpha=1, beta=2, evaporation_rate=0.5, q=100, n_features_to_select=2,random_seed=None):
+        if random_seed is not None:
+            np.random.seed(random_seed)
         self.n_ants = n_ants
         self.alpha = alpha  # Pheromone importance
         self.beta = beta    # Heuristic information importance
@@ -15,7 +17,7 @@ class ACO:
         self.pheromone_matrix = None
         self.best_path = None
         self.best_fitness = float('inf')
-        self.reduced_data = None
+        self.projected_data = None
         
     def initialize(self, data):
         self.n_features = data.shape[1]
@@ -111,11 +113,11 @@ class ACO:
         
         # Project data to best features
         if self.best_path and len(self.best_path) >= self.n_features_to_select:
-            self.reduced_data = data[:, self.best_path[:self.n_features_to_select]]
+            self.projected_data = data[:, self.best_path[:self.n_features_to_select]]
     
     def quantization_error(self, data):
         """Calculate mean quantization error similar to other algorithms"""
-        if self.best_path is None or self.reduced_data is None:
+        if self.best_path is None or self.projected_data is None:
             return float('inf')
         
         # If we have selected features, use them to compute distances

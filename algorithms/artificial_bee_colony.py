@@ -2,8 +2,10 @@ import numpy as np
 from sklearn.metrics.pairwise import pairwise_distances
 
 class ArtificialBeeColony:
-    """Artificial Bee Colony algorithm for dimensionality reduction"""
-    def __init__(self, output_dim=2, n_bees=20, limit=20, max_cycles=100):
+    def __init__(self, output_dim=2, n_bees=20, limit=20, max_cycles=100,random_seed=None):
+        if random_seed is not None:
+            np.random.seed(random_seed)
+          
         self.output_dim = output_dim
         self.n_bees = n_bees  # Number of employed bees (equal to food sources)
         self.limit = limit    # Limit of trials before abandoning a food source
@@ -33,7 +35,6 @@ class ArtificialBeeColony:
         best_idx = np.argmin(self.food_fitness)
         self.best_source = self.food_sources[best_idx].copy()
         self.best_fitness = self.food_fitness[best_idx]
-        self.orig_dist = np.linalg.norm(data[:, None] - data, axis=2)
     
     def employed_bee_phase(self, data):
         """Employed bees search for new food sources near current ones"""

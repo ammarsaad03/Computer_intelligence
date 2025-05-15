@@ -11,7 +11,9 @@ class StandardSOM:
         sigma (float): Initial neighborhood radius
         lr (float): Initial learning rate
     """
-    def __init__(self, grid_size, input_dim, sigma=1.0, lr=0.5):
+    def __init__(self, grid_size, input_dim, sigma=1.0, lr=0.5,random_seed=None):
+        if random_seed is not None:
+            np.random.seed(random_seed)
         # Handle both integer and tuple grid_size
         if isinstance(grid_size, int):
             grid_size = (grid_size, grid_size)
@@ -20,6 +22,7 @@ class StandardSOM:
         self.lr = lr        # Learning rate
         self.grid_size = grid_size
         self.input_dim = input_dim
+        self.projected_data = None
         
     def find_bmu(self, x):
         """Find Best Matching Unit (BMU) for input vector x"""
@@ -56,9 +59,16 @@ class StandardSOM:
                         
                         # Weight update rule
                         self.grid[i,j] += current_lr * influence * (x - self.grid[i,j])
-    
+        self.project_data(data)
+
+    def project_data(self, data):
+        projected = np.zeros((data.shape[0], 2))
+        for i, x in enumerate(data):
+            bmu = self.find_bmu(x)
+            projected[i] = np.array(bmu)
+        self.projected_data = projected
+
     def quantization_error(self, data):
-        """Calculate mean quantization error consistent with ACO and Harmony Search"""
         # Map data points to their BMU weight vectors
         bmu_weights = np.array([self.grid[self.find_bmu(x)] for x in data])
         

@@ -3,7 +3,9 @@ from sklearn.metrics.pairwise import pairwise_distances
 
 class PSO:
     """Particle Swarm Optimization for dimensionality reduction"""
-    def __init__(self, output_dim=2, n_particles=10, w=0.7, c1=1.5, c2=1.5):
+    def __init__(self, output_dim=2, n_particles=10, w=0.7, c1=1.5, c2=1.5,random_seed=None):
+        if random_seed is not None:
+            np.random.seed(random_seed)
         self.output_dim = output_dim
         self.n_particles = n_particles
         self.w = w  # Inertia weight
