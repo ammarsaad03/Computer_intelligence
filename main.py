@@ -311,24 +311,3 @@ if st.session_state.results:
     ]).sort_values("Quantization Error")
     st.dataframe(results_df)
 
-# Add explanation
-with st.expander("How to interpret these results"):
-    st.markdown("""
-    **Algorithms Explained:**
-    1. **Standard SOM**: Self-Organizing Map that creates a 2D representation of the data
-    2. **Ant Colony Optimization**: Uses pheromone trails to find the most informative features
-    3. **Particle Swarm Optimization**: Simulates bird flocking, particles move towards best solutions
-    4. **Harmony Search**: Inspired by musical improvisation, creates a dimensional projection
-    5. **Genetic Algorithm**: Uses evolutionary principles of selection, crossover and mutation
-    
-    **Visualization:**
-    - For SOM: Shows the 2D grid with data points assigned to neurons
-    - For ACO: Shows data points in the space of selected features
-    - For Harmony Search: Shows data points in the projected space
-    - For PSO and GA: Shows PCA-reduced data with cluster assignments
-    - Lower Quantization Error (QE) is better (measures average distance to nearest neighbor)
-    
-    **Parameters:**
-    - Each algorithm has specific parameters that can be adjusted in the sidebar
-    - Parameters are shown in the expandable sections below each result
-    """)
